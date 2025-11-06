@@ -1,0 +1,25 @@
+#!/bin/sh
+# Ultra-simple GlueLang REPL - one-liner style
+# Just read, execute, loop
+
+GLUE="$(dirname "$0")/glue"
+TMP="/tmp/glue_$$"
+
+trap "rm -f $TMP; exit" INT TERM EXIT
+
+[ ! -x "$GLUE" ] && echo "Error: Run 'make' first" && exit 1
+
+echo "GlueLang Simple REPL (type 'exit' to quit)"
+echo ""
+
+while true; do
+    printf "glue> "
+    read -r line || break
+    [ "$line" = "exit" ] && break
+    [ -z "$line" ] && continue
+    echo "$line" > "$TMP"
+    "$GLUE" "$TMP" 2>&1
+done
+
+echo "Goodbye!"
+
