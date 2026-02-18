@@ -1,15 +1,17 @@
+# Makefile for Amazon Linux 2 (non-static build)
+# Use this if static linking fails: make -f Makefile.amazon_linux2
+
 CXX = g++
 TARGET = glue
 BINDIR	= ${HOME}/.glue/bin/
-# Use STATIC=0 to disable static linking (useful for Amazon Linux 2)
-STATIC_FLAG = $(if $(filter 0,$(STATIC)),,-static)
-CXXFLAGS = -Wall -O2 $(STATIC_FLAG) -std=c++17
+# Removed --static flag for better compatibility
+CXXFLAGS = -Wall -O2 -std=c++17
 LDFLAGS = -lm
 SRCS := $(wildcard *.cc)
 OBJS := $(SRCS:.cc=.o)
 
 $(TARGET): $(OBJS)
-	$(CXX) -o $@ $(OBJS)
+	$(CXX) -o $@ $(OBJS) $(LDFLAGS)
 	cp $(TARGET) ../
 
 .PHONY: clean
@@ -21,4 +23,4 @@ install: $(TARGET)
 	install -m 755 $(CURDIR)/$(TARGET) $(BINDIR)/$(TARGET)
 
 uninstall:
-	rm $(BINDIR)/$(TARGET) 
+	rm $(BINDIR)/$(TARGET)
